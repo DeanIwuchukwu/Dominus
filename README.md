@@ -1,6 +1,6 @@
 # Dominus
 
-A Claude Code plugin providing a repeatable weekly workflow for the Gauntlet AI program.
+A Claude Code plugin providing a repeatable workflow for Dominus AI.
 
 ## Install
 
@@ -21,10 +21,10 @@ A Claude Code plugin providing a repeatable weekly workflow for the Gauntlet AI 
 | `/audit-requirements` | Before submission | Subagent grades each REQ-N with evidence |
 | `/compound-phase` | Every session end | Propose entries for `DECISIONS.md` and `KNOWLEDGE.md` |
 
-## Weekly workflow
+## Workflow
 
 ```
-Monday (setup)
+Planning
   1. Drop brief → docs/briefs/week-N-name.pdf
   2. /extract-requirements
   3. /draft-project
@@ -32,14 +32,13 @@ Monday (setup)
   5. /generate-measurements
   6. /measure-baseline   ← do this before any code changes
 
-Tuesday–Friday (build)
+Facilitate Execution 
   - Pick T-N.M tasks from WORK_BREAKDOWN.md
   - Implement → /measure-current to check progress
   - /compound-phase at the end of each session
 
-Before submission
+Verify
   - /audit-requirements
-  - Paste .claude/snippets/external-grader.md in a fresh session for independent grade
 ```
 
 ## What `/generate-measurements` creates
