@@ -1,0 +1,16 @@
+{
+  "name": "dominus",
+  "version": "1.0.0",
+  "description": "Weekly Gauntlet AI program workflow — extract requirements, plan, measure, audit, and compound learnings across briefs.",
+  "author": "DeanIwuchukwu",
+  "skills": [
+    ".claude/skills/extract-requirements",
+    ".claude/skills/draft-project",
+    ".claude/skills/decompose-work",
+    ".claude/skills/generate-measurements",
+    ".claude/skills/measure-baseline",
+    ".claude/skills/measure-current",
+    ".claude/skills/audit-requirements",
+    ".claude/skills/compound-phase"
+  ]
+}
