@@ -1,0 +1,19 @@
+{
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Consolas, monospace",
+    "fontSize": "16px",
+    "primaryColor": "#162233",
+    "primaryTextColor": "#FFFFFF",
+    "primaryBorderColor": "#33C9A8",
+    "lineColor": "#33C9A8",
+    "secondaryColor": "#0B1422",
+    "tertiaryColor": "#0B1422",
+    "noteBkgColor": "#162233",
+    "noteTextColor": "#FFFFFF",
+    "clusterBkg": "#0B1422",
+    "clusterBorder": "#2A384A"
+  },
+  "flowchart": { "curve": "basis", "padding": 16 },
+  "sequence": { "actorMargin": 40, "mirrorActors": false }
+}

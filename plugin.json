@@ -11,6 +11,7 @@
     ".claude/skills/measure-baseline",
     ".claude/skills/measure-current",
     ".claude/skills/audit-requirements",
-    ".claude/skills/compound-phase"
+    ".claude/skills/compound-phase",
+    ".claude/skills/arch-defense"
   ]
 }

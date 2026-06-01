@@ -1,0 +1,120 @@
+{
+  "brand": "PLUGFORGE",
+  "slides": [
+    {
+      "type": "title",
+      "kicker": "Architecture Defense",
+      "title": "PlugForge",
+      "subtitle": "Turning an app into a platform with API-as-contract discipline",
+      "terminal": "$ ship webhooks tail  → document.created verified ✓",
+      "thesis": "The grade is not the number of endpoints. It is whether a stranger reaches a verified signed webhook in under 30 minutes — from docs alone.",
+      "footer": "Monday 1:00 PM CT · One-week sprint · Epics 1–7"
+    },
+    {
+      "type": "cards",
+      "kicker": "The Hinge Moment",
+      "title": "Stop being an app. Start being a platform.",
+      "subtitle": "Stripe, GitHub, Slack, Shopify — each got dramatically more valuable the day a third party could build on top.",
+      "cards": [
+        {"title": "Versioned public API", "body": "/api/v1/ — consistent error shape, cursor pagination, generated OpenAPI"},
+        {"title": "OAuth 2.0 done right", "body": "Auth Code + PKCE for web, Device Grant for CLI, granular scopes"},
+        {"title": "Signed webhooks", "body": "HMAC-SHA256 + timestamp, retries w/ backoff, DLQ, replay"},
+        {"title": "A typed SDK", "body": "@ship/sdk — parity-tested against the spec, drift fails CI"}
+      ],
+      "callout": {
+        "title": "What the grade measures",
+        "body": "Depth over breadth. Proof over promises. A small public API that matches its spec beats a sprawling one that contradicts it."
+      }
+    },
+    {
+      "type": "image",
+      "kicker": "System at a Glance",
+      "title": "The platform boundary",
+      "subtitle": "Auth, scope, rate-limit, audit and webhook publication attach only at the public layer.",
+      "image": "arch-defense-build/diagrams/highlevel.png",
+      "caption": "High-level diagram — rendered from the mermaid block in ArchDefense.md"
+    },
+    {
+      "type": "pipeline",
+      "kicker": "Request Lifecycle",
+      "title": "How a request reaches a domain service",
+      "subtitle": "Internal routes call the same domain services directly — the public layer adds the platform concerns.",
+      "steps": ["Bearer\nAuthN", "Scope\nAuthZ", "Rate\nlimit", "Audit\nlog", "Domain\nservice", "Event\npublish"],
+      "highlight": 4,
+      "panels": [
+        {"title": "PUBLIC  /api/v1/*", "accent": "teal", "bullets": [
+          "Fresh router. Owns AuthN, AuthZ, rate-limit, audit, webhooks.",
+          "A lint rule fails the build if it imports an internal handler.",
+          "Every failure ships ApiError { code, message, request_id }."
+        ]},
+        {"title": "INTERNAL  /api/*", "accent": "orange", "bullets": [
+          "First-party UI traffic; no public contract obligations.",
+          "Calls the SAME domain services — single source of truth.",
+          "The public/internal split is a one-way door. Enforced, not hoped."
+        ]}
+      ]
+    },
+    {
+      "type": "two_column",
+      "kicker": "Identity Layer",
+      "title": "Two flows, chosen for two clients",
+      "subtitle": "RFC 6749 + 7636 (PKCE) + 8628 (Device Grant), hand-rolled for correctness.",
+      "columns": [
+        {"heading": "Auth Code + PKCE", "subhead": "Web apps & SPAs", "steps": [
+          "/oauth/authorize records code_challenge",
+          "User consents on Ship's own screen",
+          "/oauth/token requires code_verifier",
+          "Mismatched verifier → 400 invalid_grant"
+        ], "why": "PKCE binds the code to the client without shipping a secret to the browser. The negative case is mandatory."},
+        {"heading": "Device Grant", "subhead": "CLI — no browser", "steps": [
+          "/oauth/device/code issues user + device code",
+          "User verifies code in any browser",
+          "Client polls /oauth/token until authorized",
+          "slow_down responses honored on poll"
+        ], "why": "A CLI can't safely hold a secret or catch a redirect. Device flow fits the headless client exactly."}
+      ]
+    },
+    {
+      "type": "metrics",
+      "kicker": "The Signature Challenge",
+      "title": "Time-to-First-Event: the rubric",
+      "subtitle": "A platform is judged by how fast a stranger composes a useful loop on top of it.",
+      "terminal": "$ pnpm install @ship/sdk\n$ ship login            # device flow\n$ ship docs create --title \"hello\"\n$ ship webhooks tail    # stream deliveries\n→ document.created  signature verified ✓",
+      "metrics": [
+        {"value": "< 60s", "label": "TTFE drill in CI (P95)"},
+        {"value": "≤ 30min", "label": "Clean machine, docs only"},
+        {"value": "0%", "label": "Flake rate over 20 CI runs"},
+        {"value": "< 250KB", "label": "SDK install, gzipped"}
+      ],
+      "callout": "pnpm drill ttfe runs install → login → subscribe → create → receive → verify against a containerized Ship — and catches contract regressions faster than any unit test."
+    },
+    {
+      "type": "timeline",
+      "kicker": "Execution Plan",
+      "title": "Priority order: contract before everything",
+      "subtitle": "OAuth and the public/internal boundary go in on Day 1 — they are one-way doors.",
+      "items": [
+        {"badge": "E1", "title": "OAuth foundation", "body": "Auth Code + PKCE end-to-end, negative tests included. Device Grant same day."},
+        {"badge": "E2", "title": "API boundary", "body": "Fresh /api/v1 router, lint rule, error fitness test = the TODO list."},
+        {"badge": "E3", "title": "OpenAPI gen", "body": "Generator working on documents before adding issues, sprints, me."},
+        {"badge": "E4", "title": "Webhooks e2e", "body": "Registry → bus → subs → signer → deliverer → log → replay, one day."},
+        {"badge": "E5", "title": "SDK + CLI", "body": "CLI consumes the SDK as it's built; worst bugs surface against a real consumer."},
+        {"badge": "E6", "title": "TTFE drill", "body": "From Day 5 — once SDK + one resource exist, the drill exists."},
+        {"badge": "E7", "title": "Agent rewire", "body": "Portal eats the dog food. Agent becomes a citizen behind a feature flag."}
+      ]
+    },
+    {
+      "type": "summary",
+      "kicker": "Defense Summary",
+      "title": "What I'm committing to ship",
+      "rows": [
+        {"title": "OAuth that passes", "body": "Auth Code + PKCE end-to-end, wrong verifier → invalid_grant. Device Grant honors slow_down."},
+        {"title": "A contract", "body": "Every /api/v1 route: scoped, ApiError-shaped, in the generated OpenAPI, cursor-paginated if a list."},
+        {"title": "Webhooks you trust", "body": "HMAC + timestamp, backoff + DLQ + replay, verified by the SDK in one line."},
+        {"title": "A CLI that proves it", "body": "ship login / docs create / webhooks tail — the must-ship reference integration."},
+        {"title": "Agent at the front door", "body": "OAuth app → SDK → /api/v1, with audit-log rows as the proof."}
+      ],
+      "footer": "Depth over breadth. Proof over promises. The TTFE drill is the rubric."
+    }
+  ]
+}
