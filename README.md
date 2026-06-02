@@ -12,7 +12,7 @@ A Claude Code plugin providing a repeatable workflow for Dominus AI.
 
 | Skill | Trigger | Purpose |
 |-------|---------|---------|
-| `/arch-defense` | Brief in hand | Brief (+ codebase) → `ArchDefense.md` *and* `ArchDefense.pptx` — **standalone, the Monday defense; run before anything below.** Uses an existing `ArchDefense.md` as-is, never overwrites it |
+| `/arch-defense` | Brief in hand | Brief (+ codebase) → `ArchDefense.md` *and* `ArchDefense.pptx` — **standalone, the arch defense; run before anything below.** Uses an existing `ArchDefense.md` as-is, never overwrites it |
 | `/extract-requirements` | New brief PDF | Brief PDF → `docs/REQUIREMENTS.md` with REQ-N IDs |
 | `/draft-project` | After requirements | REQUIREMENTS.md → `docs/PROJECT.md` (what + why) |
 | `/decompose-work` | After project draft | REQUIREMENTS.md → `docs/WORK_BREAKDOWN.md` with T-N.M task IDs |
